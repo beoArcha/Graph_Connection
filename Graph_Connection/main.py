@@ -1,6 +1,6 @@
 #!/usr/bin/python3
-from .data_import import DataImport
-from .networking import Networking
+from Graph_Connection.data_import import DataImport
+from Graph_Connection.networking import Networking
 from os import path
 import argparse
 
@@ -38,7 +38,7 @@ def parsing_args() -> argparse:
     parser.add_argument("--neighbors", "-n", help="Number of neighbors", type=int, default=5)
     parser.add_argument("--separator", "-s", help="CSV file separator", type=str, default=",")
     parser.add_argument("--target_class", "-c", help="Target class", type=str, default="class")
-    parser.add_argument("--name", "-c", help="Name", type=str)
+    parser.add_argument("--name", "-na", help="Name", type=str)
     parser.add_argument("--index", "-i", help="Is index", action="store_true")
     parser.add_argument("--default", "-d", help="Default set", type=int, default=0)
     parser.add_argument("--debug", "-de", help="Debug mode", action="store_true")
@@ -121,7 +121,8 @@ def preset_data(num: int) -> tuple:
         name = "Yeast"
     else:
         full, target, sep, index, name = preset_data(7)
-    return full.format(path.dirname(__file__)), target, sep, index, name
+    directory = path.split(path.dirname(__file__))
+    return full.format(directory[0]), target, sep, index, name
 
 
 if __name__ == "__main__":
