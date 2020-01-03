@@ -2,10 +2,11 @@ class CreatorItem(object):
     def __init__(self, neighbors, params, id_number, distances, columns, own_class):
         self.neighbours = neighbors
         self.params = params
-        self.id = id_number
+        self.id_number = id_number
         self.distances = distances
         self.columns = columns
         self.class_con = own_class
+        self.node_id = -1
 
 
 class Creator:

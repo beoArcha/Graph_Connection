@@ -43,7 +43,7 @@ def main(**kwargs) -> None:
         if answer is not None and len(answer.values()) > 0:
             answer = connection_database.execute(connection_database.delete_all)
             print("Database cleaned\n{}".format(answer))
-        answer = connection_database.execute(connection_database.insert_objects(creator))
+        answer = connection_database.insert_objects(creator)
     finally:
         connection_database.close()
     # endregion
