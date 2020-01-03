@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='Graph_Connection',
+    name='Graph Connection',
     version='',
     packages=find_packages(),
     url='',

@@ -19,7 +19,6 @@ def main(**kwargs) -> None:
         index = args.index
     name = args.name
     neighbors_number = args.neighbors
-    debug_mode = args.debug
     # endregion
     # region source
     data_source = DataImport(full_address, target_class, separator, index)
@@ -45,6 +44,8 @@ def main(**kwargs) -> None:
             answer = connection_database.execute(connection_database.delete_all)
             print("Database cleaned\n{}".format(answer))
         answer = connection_database.insert_objects(creator)
+        if args.school:
+            its_because_school(connection_database)
     finally:
         connection_database.close()
     # endregion
@@ -63,7 +64,7 @@ def parsing_args() -> argparse:
     parser.add_argument("--name", "-na", help="Name", type=str)
     parser.add_argument("--index", "-i", help="Is index", action="store_true")
     parser.add_argument("--default", "-d", help="Default set", type=int, default=0)
-    parser.add_argument("--debug", "-de", help="Debug mode", action="store_true")
+    parser.add_argument("--school", "-sch", help="School mode", action="store_true")
     return parser.parse_args()
 
 
@@ -145,6 +146,18 @@ def preset_data(num: int) -> tuple:
         full, target, sep, index, name = preset_data(7)
     directory = path.split(path.dirname(__file__))
     return full.format(directory[0]), target, sep, index, name
+
+
+def its_because_school(connection):
+    """to show working elements"""
+    print("Shortest path between two nodes")
+    answer = connection.execute(connection.get_path, 0, 4)
+    for a in answer.values():
+        print(a)
+    print("Centrality closeness")
+    answer = connection.execute(connection.get_closeness, 1, True)
+    for a in answer.values():
+        print(a)
 
 
 if __name__ == "__main__":

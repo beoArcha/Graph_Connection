@@ -3,6 +3,7 @@ from neo4j import GraphDatabase
 
 class Database(object):
     """Manage connection to neo4j"""
+
     def __init__(self, uri, user, password):
         self._driver = GraphDatabase.driver(uri, auth=(user, password))
 
@@ -56,17 +57,46 @@ class Database(object):
             if neighbour != creator_item.id_number:
                 txt = "MATCH (i{{id:{id_number}}}), (j{{id:{neighbour}}})" \
                       "CREATE ((i)-[:neighbour{{distance:{distance}}}]->(j));".format(
-                       id_number=creator_item.id_number,
-                       neighbour=neighbour,
-                       distance=creator_item.distances[e]
+                    id_number=creator_item.id_number,
+                    neighbour=neighbour,
+                    distance=creator_item.distances[e]
                 )
                 tx.run(txt)
                 # print(txt)
 
     @staticmethod
-    def get_path(txt, start, end):
+    def get_path(tx, start, end):
+        txt = "MATCH (start{{id:{start}}}), (end{{id:{end}}}) " \
+              "CALL algo.shortestPath.stream(start, end, \"distance\") " \
+              "YIELD nodeId, cost " \
+              "MATCH (other) WHERE id(other) = nodeId " \
+              "RETURN other.id AS name, cost".format(
+            start=start,
+            end=end
+        )
+        result = tx.run(txt)
+        return result
+
+    @staticmethod
+    def get_closeness(tx, target_class, is_huge=False):
+        txt = "CALL  algo.closeness.stream('{target_class}', 'neighbour'{huge})" \
+              "YIELD nodeId, centrality " \
+              "RETURN algo.asNode(nodeId).id " \
+              "AS node, centrality ORDER BY centrality DESC ".format(
+            target_class=target_class,
+            huge=", {graph:'huge'} " if is_huge else " "
+        )
+        result = tx.run(txt)
+        return result
+
+    @staticmethod
+    def get_eigenvector(tx):
         pass
 
     @staticmethod
-    def get_between(txt):
+    def get_degree_centrality(tx):
+        pass
+
+    @staticmethod
+    def get_betweenness(tx):
         pass
