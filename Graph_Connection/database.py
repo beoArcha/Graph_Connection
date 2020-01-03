@@ -2,7 +2,7 @@ from neo4j import GraphDatabase
 
 
 class Database(object):
-
+    """Manage connection to neo4j"""
     def __init__(self, uri, user, password):
         self._driver = GraphDatabase.driver(uri, auth=(user, password))
 
@@ -54,9 +54,19 @@ class Database(object):
     def create_edge(tx, creator_item):
         for e, neighbour in enumerate(creator_item.neighbours):
             if neighbour != creator_item.id_number:
-                txt = "MATCH (i{{id:{id_number}}}), (j{{id:{neighbour}}}) CREATE ((i)-[:neighbour]->(j));".format(
-                    id_number=creator_item.id_number,
-                    neighbour=neighbour
+                txt = "MATCH (i{{id:{id_number}}}), (j{{id:{neighbour}}})" \
+                      "CREATE ((i)-[:neighbour{{distance:{distance}}}]->(j));".format(
+                       id_number=creator_item.id_number,
+                       neighbour=neighbour,
+                       distance=creator_item.distances[e]
                 )
                 tx.run(txt)
                 # print(txt)
+
+    @staticmethod
+    def get_path(txt, start, end):
+        pass
+
+    @staticmethod
+    def get_between(txt):
+        pass
