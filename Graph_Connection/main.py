@@ -158,6 +158,18 @@ def its_because_school(connection):
     answer = connection.execute(connection.get_closeness, 1, True)
     for a in answer.values():
         print(a)
+    print("Betweenness centrality")
+    answer = connection.execute(connection.get_betweenness, 2)
+    for a in answer.values():
+        print(a)
+    print("Eigenvector")
+    answer = connection.execute(connection.get_eigenvector, 3)
+    for a in answer.values():
+        print(a)
+    print("Degree centrality")
+    answer = connection.execute(connection.get_degree_centrality)
+    for a in answer.values():
+        print(a)
 
 
 if __name__ == "__main__":

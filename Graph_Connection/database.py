@@ -90,13 +90,30 @@ class Database(object):
         return result
 
     @staticmethod
-    def get_eigenvector(tx):
-        pass
+    def get_eigenvector(tx, target_class):
+        txt = "CALL algo.eigenvector.stream('{target_class}', 'neighbour') " \
+              "YIELD nodeId, score " \
+              "RETURN algo.asNode(nodeId).id AS page, score " \
+              "ORDER BY score DESC".format(
+            target_class=target_class
+        )
+        result = tx.run(txt)
+        return result
 
     @staticmethod
     def get_degree_centrality(tx):
-        pass
+        txt = "MATCH (n) RETURN n.id AS name, size(()-[:neighbour]->(n)) AS degree ORDER BY degree DESC"
+        result = tx.run(txt)
+        return result
 
     @staticmethod
-    def get_betweenness(tx):
-        pass
+    def get_betweenness(tx, target_class):
+        txt = "CALL algo.betweenness.stream('{target_class}', 'neighbour', {{direction:'out'}}) " \
+                "YIELD nodeId, centrality " \
+                "MATCH (n:`1`) WHERE id(n) = nodeId " \
+                "RETURN n.id AS n,centrality " \
+                "ORDER BY centrality DESC".format(
+                 target_class=target_class
+        )
+        result = tx.run(txt)
+        return result
