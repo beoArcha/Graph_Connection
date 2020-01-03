@@ -32,8 +32,9 @@ def main(**kwargs) -> None:
     neighbors.k_neighbors()
     neighbors_list = neighbors.neighbors()
     distances = neighbors.distances
+    indices = neighbors.indices
     # endregion
-    creator = Creator(neighbors_list, np_train, data_source.columns,
+    creator = Creator(indices, np_train, data_source.columns,
                       index, target_class, distances, class_train).list_of_objects
     # region connection
     connection_database = None

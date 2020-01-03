@@ -32,22 +32,31 @@ class Database(object):
                 info[creator_item.id_number] = node_id
                 creator_item.node_id = node_id
             tx.commit()
-            # tx = session.begin_transaction()
-            # for creator_item in creator:
-            #   self.create_edge(tx, creator_item)
-            # tx.commit()
+            tx = session.begin_transaction()
+            for creator_item in creator:
+                self.create_edge(tx, creator_item)
+            tx.commit()
 
     @staticmethod
     def create_node(tx, creator_item):
         params_str = ""
         for p in range(0, len(creator_item.params)):
             params_str = "{} {}:{},".format(params_str, str(creator_item.columns[p]), str(creator_item.params[p]))
-        params_str = params_str[0:len(params_str) - 1]
-        return tx.run("CREATE (`{id_number}`:`{class_number}` {{{params}}}) RETURN id(`{id_number}`)".format(
+        params_str = "{} id:{}".format(params_str, str(creator_item.id_number))
+        txt = "CREATE (id_{id_number}:`{class_number}` {{{params}}}) RETURN id(id_{id_number})".format(
             id_number=creator_item.id_number,
             class_number=creator_item.class_con,
-            params=params_str)).single().value()
+            params=params_str)
+        # print(txt)
+        return tx.run(txt).single().value()
 
     @staticmethod
     def create_edge(tx, creator_item):
-        tx.run("MATCH (a:Person) WHERE id(a) = $id ")
+        for e, neighbour in enumerate(creator_item.neighbours):
+            if neighbour != creator_item.id_number:
+                txt = "MATCH (i{{id:{id_number}}}), (j{{id:{neighbour}}}) CREATE ((i)-[:neighbour]->(j));".format(
+                    id_number=creator_item.id_number,
+                    neighbour=neighbour
+                )
+                tx.run(txt)
+                # print(txt)
