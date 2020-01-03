@@ -12,10 +12,11 @@ class DataImport:
         self.series_target = data_frame_full[target_class]
         self.target = target_class
         self.scaler = MinMaxScaler()
-        self.X_test = ""
-        self.Y_test = ""
-        self.X_train = ""
-        self.Y_train = ""
+        self.columns = data_frame_full.columns
+        self.X_test = None
+        self.Y_test = None
+        self.X_train = None
+        self.Y_train = None
 
     def eliminate_nan(self):
         self.data_frame = self.data_frame.fillna(0)
